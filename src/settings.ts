@@ -14,7 +14,7 @@ export class MubuSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
     containerEl.addClass("mbm-settings");
-    containerEl.createEl("h2", { text: "Mubu Mindmap 设置" });
+    new Setting(containerEl).setName("Mubu Mindmap 设置").setHeading();
 
     new Setting(containerEl)
       .setName("默认布局")
@@ -165,7 +165,7 @@ export class MubuSettingTab extends PluginSettingTab {
         })
       );
 
-    containerEl.createEl("h3", { text: "使用提示" });
+    new Setting(containerEl).setName("使用提示").setHeading();
     const tips = containerEl.createEl("ul", { cls: "mbm-tips" });
     [
       "笔记里的标题（#）、无序列表（-）、数字列表（1.）会自动变成树状结构。",

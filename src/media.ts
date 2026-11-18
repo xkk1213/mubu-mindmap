@@ -93,7 +93,7 @@ export class MediaViewer {
   private closed = false;
 
   constructor(private opts: ViewerOpts) {
-    this.root = document.createElement("div");
+    this.root = createDiv();
     this.root.className = "mbm-lb";
     this.root.setAttribute("role", "dialog");
     this.root.setAttribute("aria-label", "放大查看");
@@ -124,23 +124,23 @@ export class MediaViewer {
       }
     }
 
-    const head = document.createElement("div");
+    const head = createDiv();
     head.className = "mbm-lb-head";
 
-    const titles = document.createElement("div");
+    const titles = createDiv();
     titles.className = "mbm-lb-titles";
-    this.titleEl = document.createElement("div");
+    this.titleEl = createDiv();
     this.titleEl.className = "mbm-lb-title";
-    this.subEl = document.createElement("div");
+    this.subEl = createDiv();
     this.subEl.className = "mbm-lb-sub";
     titles.appendChild(this.titleEl);
     titles.appendChild(this.subEl);
     head.appendChild(titles);
 
-    const actions = document.createElement("div");
+    const actions = createDiv();
     actions.className = "mbm-lb-actions";
     const mkBtn = (label: string, text: string, fn: () => void, cls = "") => {
-      const b = document.createElement("button");
+      const b = createEl("button");
       b.className = "mbm-lb-btn" + (cls ? " " + cls : "");
       b.type = "button";
       b.title = label;
@@ -157,12 +157,12 @@ export class MediaViewer {
     if (opts.nav) {
       mkBtn("上一个节点", "‹", () => this.step("prev"), "mbm-lb-nav");
       mkBtn("下一个节点", "›", () => this.step("next"), "mbm-lb-nav");
-      const sep = document.createElement("span");
+      const sep = createSpan();
       sep.className = "mbm-lb-sep";
       actions.appendChild(sep);
     }
 
-    this.zoomLabel = document.createElement("span");
+    this.zoomLabel = createSpan();
     this.zoomLabel.className = "mbm-lb-zoom";
     actions.appendChild(this.zoomLabel);
     mkBtn("缩小", "−", () => this.zoomBy(1 / 1.25));
@@ -173,13 +173,13 @@ export class MediaViewer {
     close.setAttribute("aria-label", "关闭（Esc）");
     head.appendChild(actions);
 
-    const body = document.createElement("div");
+    const body = createDiv();
     body.className = "mbm-lb-body";
-    this.stage = document.createElement("div");
+    this.stage = createDiv();
     this.stage.className = "mbm-lb-stage";
     body.appendChild(this.stage);
 
-    const foot = document.createElement("div");
+    const foot = createDiv();
     foot.className = "mbm-lb-foot";
     foot.textContent =
       opts.hint ?? "滚轮缩放 · 按住拖动平移 · 双击复位 · Esc 关闭";
@@ -188,7 +188,7 @@ export class MediaViewer {
     this.root.appendChild(body);
     this.root.appendChild(foot);
     document.body.appendChild(this.root);
-    this.root.style.zIndex = String(9998 + stack.length * 10);
+    this.root.setCssStyles({ zIndex: String(9998 + stack.length * 10) });
     stack.push(this);
 
     // 事件
@@ -310,8 +310,8 @@ export class MediaViewer {
   }
 
   private apply() {
-    this.stage.style.transform = `translate(${this.tx}px, ${this.ty}px) scale(${this.k})`;
-    this.stage.style.transformOrigin = "0 0";
+    this.stage.setCssStyles({ transform: `translate(${this.tx}px, ${this.ty}px) scale(${this.k})` });
+    this.stage.setCssStyles({ transformOrigin: "0 0" });
     this.zoomLabel.textContent = `${Math.round(this.k * 100)}%`;
   }
 
@@ -365,8 +365,8 @@ export class MediaViewer {
     while (this.stage.firstChild) this.stage.removeChild(this.stage.firstChild);
     this.stage.appendChild(built.content);
     if (this.opts.stageSize) {
-      this.stage.style.width = `${Math.ceil(built.natural.w)}px`;
-      this.stage.style.height = `${Math.ceil(built.natural.h)}px`;
+      this.stage.setCssStyles({ width: `${Math.ceil(built.natural.w)}px` });
+      this.stage.setCssStyles({ height: `${Math.ceil(built.natural.h)}px` });
     }
     this.titleEl.textContent = built.title;
     this.subEl.textContent = built.subtitle ?? "";
@@ -407,7 +407,7 @@ export function openImage(
 ) {
   const src = img.getAttribute("src") ?? "";
   if (!src) return;
-  const wrap = document.createElement("img");
+  const wrap = createEl("img");
   wrap.className = "mbm-lb-img";
   wrap.src = src;
   wrap.alt = img.getAttribute("alt") ?? "";
@@ -415,8 +415,8 @@ export function openImage(
     w: img.naturalWidth || 800,
     h: img.naturalHeight || 600,
   };
-  wrap.style.width = `${natural.w}px`;
-  wrap.style.height = `${natural.h}px`;
+  wrap.setCssStyles({ width: `${natural.w}px` });
+  wrap.setCssStyles({ height: `${natural.h}px` });
 
   new MediaViewer({
     build: () => ({
@@ -445,10 +445,10 @@ export function openTable(
 
   const clone = table.cloneNode(true) as HTMLElement;
   clone.classList.add("mbm-lb-table");
-  clone.style.width = "max-content";
-  clone.style.maxWidth = "none";
+  clone.setCssStyles({ width: "max-content" });
+  clone.setCssStyles({ maxWidth: "none" });
 
-  const box = document.createElement("div");
+  const box = createDiv();
   box.className = "mbm-lb-tablebox";
   box.appendChild(clone);
 
@@ -458,9 +458,9 @@ export function openTable(
     clone.querySelectorAll("tr:first-child th, tr:first-child td").length;
 
   // 原始尺寸：先渲染到屏幕外测量
-  box.style.position = "absolute";
-  box.style.left = "-10000px";
-  box.style.top = "0";
+  box.setCssStyles({ position: "absolute" });
+  box.setCssStyles({ left: "-10000px" });
+  box.setCssStyles({ top: "0" });
   document.body.appendChild(box);
   const rect = clone.getBoundingClientRect();
   const natural = {
@@ -468,9 +468,9 @@ export function openTable(
     h: Math.max(80, Math.ceil(rect.height)),
   };
   // 清掉临时定位，否则挂进浮层后绝对定位会让舞台拿到 0 尺寸
-  box.style.position = "";
-  box.style.left = "";
-  box.style.top = "";
+  box.setCssStyles({ position: "" });
+  box.setCssStyles({ left: "" });
+  box.setCssStyles({ top: "" });
   box.remove();
 
   new MediaViewer({
@@ -530,15 +530,15 @@ function cloneCard(source: HTMLElement, host: HTMLElement) {
   }
   clone.removeAttribute("style");
 
-  const wrap = document.createElement("div");
+  const wrap = createDiv();
   wrap.className = "mbm-lb-cardwrap";
   for (const [name, v] of vars) wrap.style.setProperty(name, v);
   wrap.appendChild(clone);
 
   // 量出自然尺寸（放在屏幕外，避免影响浮层布局）
-  wrap.style.position = "absolute";
-  wrap.style.left = "-10000px";
-  wrap.style.top = "0";
+  wrap.setCssStyles({ position: "absolute" });
+  wrap.setCssStyles({ left: "-10000px" });
+  wrap.setCssStyles({ top: "0" });
   document.body.appendChild(wrap);
 
   // 卡片按文字宽度排版时，图片 / 表格会被 max-width:100% 压小；
@@ -554,15 +554,15 @@ function cloneCard(source: HTMLElement, host: HTMLElement) {
   });
   const maxW = 640;
   const target = Math.min(maxW, Math.max(firstW, intrinsic ? intrinsic + 34 : 0));
-  wrap.style.width = `${target}px`;
+  wrap.setCssStyles({ width: `${target}px` });
   const rect = box();
   const natural = {
     w: Math.max(160, target),
     h: Math.max(80, Math.ceil(rect.height)),
   };
-  wrap.style.position = "";
-  wrap.style.left = "";
-  wrap.style.top = "";
+  wrap.setCssStyles({ position: "" });
+  wrap.setCssStyles({ left: "" });
+  wrap.setCssStyles({ top: "" });
   wrap.remove();
 
   bindInlineMedia(wrap, host);

@@ -1,6 +1,5 @@
 import esbuild from "esbuild";
 import process from "process";
-import builtins from "builtin-modules";
 
 const banner = `/*
 Mubu Mindmap for Obsidian - bundled build.
@@ -26,7 +25,6 @@ const ctx = await esbuild.context({
     "@lezer/common",
     "@lezer/highlight",
     "@lezer/lr",
-    ...builtins,
   ],
   format: "cjs",
   target: "es2018",

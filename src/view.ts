@@ -79,8 +79,8 @@ function bindTip(el: HTMLElement, getText: () => string) {
       x = Math.max(8, Math.min(x, window.innerWidth - tr.width - 8));
       let y = r.bottom + 8;
       if (y + tr.height > window.innerHeight - 8) y = r.top - tr.height - 8;
-      tip.style.left = `${Math.round(x)}px`;
-      tip.style.top = `${Math.round(y)}px`;
+      tip.setCssStyles({ left: `${Math.round(x)}px` });
+      tip.setCssStyles({ top: `${Math.round(y)}px` });
     }, 170);
   };
   el.addEventListener("pointerenter", show);
@@ -186,7 +186,7 @@ class NodePickerModal extends Modal {
         const title = (c.title || "（空）").toLowerCase();
         if (!this.query || title.includes(this.query)) {
           const row = this.listEl.createDiv("mbm-picker-row");
-          row.style.paddingLeft = `${8 + depth * 14}px`;
+          row.setCssStyles({ paddingLeft: `${8 + depth * 14}px` });
           row.createSpan({ cls: "mbm-picker-title", text: c.title || "（空）" });
           row.addEventListener("click", () => {
             this.close();

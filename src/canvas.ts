@@ -196,7 +196,7 @@ export class MindmapCanvas {
     this.gridEl = this.wrapper.createDiv("mbm-grid");
     this.viewport = this.wrapper.createDiv("mbm-viewport");
     this.stage = this.viewport.createDiv("mbm-stage");
-    this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.svg = createSvg("svg");
     this.svg.classList.add("mbm-edges");
     this.stage.appendChild(this.svg);
     this.layer = this.stage.createDiv("mbm-nodes");
@@ -340,8 +340,8 @@ export class MindmapCanvas {
     for (const entry of this.els.values()) {
       const key = keyOf(entry.node);
       const sz = this.sizes.get(key);
-      entry.el.style.width = sz?.w ? `${Math.round(sz.w)}px` : "";
-      entry.el.style.height = sz?.h ? `${Math.round(sz.h)}px` : "";
+      entry.el.setCssStyles({ width: sz?.w ? `${Math.round(sz.w)}px` : "" });
+      entry.el.setCssStyles({ height: sz?.h ? `${Math.round(sz.h)}px` : "" });
       entry.el.classList.toggle("mbm-node--sized", !!sz);
     }
   }
@@ -597,7 +597,7 @@ export class MindmapCanvas {
 
   private buildNode(node: MindNode, jobs: Promise<void>[]): HTMLElement {
     const s = this.getSettings();
-    const el = document.createElement("div");
+    const el = createDiv();
     el.className = "mbm-node";
     el.dataset.id = node.id;
     if (node.kind === "root") el.classList.add("mbm-node--root");
@@ -1032,7 +1032,7 @@ export class MindmapCanvas {
       const key = edge.from.id + ">" + edge.to.id;
       wanted.add(key);
       if (!this.paths.has(key)) {
-        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const p = createSvg("path");
         p.classList.add("mbm-edge");
         p.dataset.key = key;
         if (edge.to.branch != null && this.getSettings().branchColors) {
@@ -1061,8 +1061,8 @@ export class MindmapCanvas {
       const r = this.pos.get(n.id);
       const entry = this.els.get(n.id);
       if (!r || !entry) continue;
-      entry.el.style.left = `${r.x}px`;
-      entry.el.style.top = `${r.y}px`;
+      entry.el.setCssStyles({ left: `${r.x}px` });
+      entry.el.setCssStyles({ top: `${r.y}px` });
       entry.el.dataset.side = String(n.side);
       entry.el.dataset.branch = String(n.branch);
       entry.el.classList.toggle("mbm-node--side-left", n.side === -1);
@@ -1093,7 +1093,7 @@ export class MindmapCanvas {
       if (!a || !b || !path) continue;
       path.setAttribute("d", this.edgePath(a, b, edge.to.side));
       // 首尾相接处稍微内缩，避免压住卡片圆角
-      path.style.strokeWidth = `${this.getSettings().lineWidth}`;
+      path.setCssStyles({ strokeWidth: `${this.getSettings().lineWidth}` });
     }
   }
 
@@ -1136,8 +1136,8 @@ export class MindmapCanvas {
     const h = Math.ceil(b.y1 - b.y0) + pad * 2;
 
     // 内容可能是负坐标（卡片被拖到左上角外面），SVG 用 viewBox 平移对齐
-    this.svg.style.left = `${x0}px`;
-    this.svg.style.top = `${y0}px`;
+    this.svg.setCssStyles({ left: `${x0}px` });
+    this.svg.setCssStyles({ top: `${y0}px` });
     this.svg.setAttribute("width", String(w));
     this.svg.setAttribute("height", String(h));
     this.svg.setAttribute("viewBox", `${x0} ${y0} ${w} ${h}`);
@@ -1154,8 +1154,8 @@ export class MindmapCanvas {
       window.setTimeout(() => this.stage.removeClass("mbm-stage--anim"), 240);
     }
     const { x, y, k } = this.view;
-    this.stage.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
-    this.gridEl.style.backgroundPosition = `${x}px ${y}px`;
+    this.stage.setCssStyles({ transform: `translate(${x}px, ${y}px) scale(${k})` });
+    this.gridEl.setCssStyles({ backgroundPosition: `${x}px ${y}px` });
     this.updateVBar();
     this.cb.onZoom?.(k);
   }
@@ -1235,8 +1235,8 @@ export class MindmapCanvas {
     const thumbH = clamp((visH / span) * trackH, 34, trackH);
     const maxTop = Math.max(0, trackH - thumbH);
     const ratio = clamp((visTop - this.bounds.y0) / Math.max(1, span - visH), 0, 1);
-    thumb.style.height = `${Math.round(thumbH)}px`;
-    thumb.style.transform = `translateY(${Math.round(ratio * maxTop)}px)`;
+    thumb.setCssStyles({ height: `${Math.round(thumbH)}px` });
+    thumb.setCssStyles({ transform: `translateY(${Math.round(ratio * maxTop)}px)` });
   }
 
   /* ------------------------------------------------------------------ */
@@ -1715,8 +1715,8 @@ export class MindmapCanvas {
     st.moved = true;
     st.w = w;
     st.h = h;
-    st.el.style.width = `${w}px`;
-    st.el.style.height = `${h}px`;
+    st.el.setCssStyles({ width: `${w}px` });
+    st.el.setCssStyles({ height: `${h}px` });
     st.el.addClass("mbm-node--sized");
     if (this.resizeRaf) return;
     this.resizeRaf = window.requestAnimationFrame(() => {
@@ -1863,7 +1863,7 @@ export class MindmapCanvas {
       this.editing = false;
       return;
     }
-    const ta = document.createElement("textarea");
+    const ta = createEl("textarea");
     ta.className = "mbm-edit";
     ta.value = node.title;
     ta.spellcheck = false;

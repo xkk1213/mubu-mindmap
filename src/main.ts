@@ -95,7 +95,8 @@ export default class MubuMindmapPlugin extends Plugin {
   onunload() {
     this.actionEls.forEach((el) => el.remove());
     this.actionEls = [];
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE);
+    // 注意：不要在这里 detachLeavesOfType，否则用户把导图拖到别处后，
+    // 重新加载插件时 leaf 会被重置回默认位置（社区审查明确要求避免）。
     this.views.clear();
   }
 
