@@ -1,0 +1,5 @@
+node_modules/
+data.json
+test/**/*.png
+*.zip
+.DS_Store
