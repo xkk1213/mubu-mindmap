@@ -1,0 +1,10 @@
+{
+  "id": "mubu-mindmap",
+  "name": "Mubu Mindmap",
+  "version": "1.4.0",
+  "minAppVersion": "1.4.0",
+  "description": "把 Markdown 一键变成幕布式思维导图：标题下划线、列表荧光笔且可单独调每个词，卡片可拖动缩放、层级可调且不改原文，支持搜索跳转、滚动条与键盘平移、卡片与表格图片放大。",
+  "author": "xkk1213",
+  "authorUrl": "https://github.com/xkk1213",
+  "isDesktopOnly": false
+}

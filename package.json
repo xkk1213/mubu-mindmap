@@ -1,0 +1,26 @@
+{
+  "name": "mubu-mindmap",
+  "version": "1.4.0",
+  "description": "将 Markdown 一键转换为幕布式思维导图的 Obsidian 插件",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "typecheck": "tsc -noEmit -skipLibCheck"
+  },
+  "keywords": [
+    "obsidian",
+    "mindmap",
+    "markdown"
+  ],
+  "author": "xkk1213",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "^0.20.2",
+    "obsidian": "^1.5.7",
+    "playwright-core": "^1.65.0",
+    "typescript": "^5.4.5"
+  }
+}

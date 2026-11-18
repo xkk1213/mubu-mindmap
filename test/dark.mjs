@@ -1,0 +1,23 @@
+import { chromium } from "playwright-core";
+import path from "path";
+const EDGE = "C://Program Files (x86)//Microsoft//Edge//Application//msedge.exe";
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
+const browser = await chromium.launch({ executablePath: EDGE, headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1.6 });
+page.on("pageerror", (e) => console.log("[pageerror]", e.message));
+await page.goto("file:///" + path.join(here, "preview.html").replace(/\\/g, "/"));
+await page.waitForFunction(() => document.body.classList.contains("ready"), null, { timeout: 15000 });
+await page.waitForTimeout(800);
+await page.evaluate(() => window.mbm.theme("dark"));
+await page.waitForTimeout(400);
+await page.screenshot({ path: path.join(here, "shots", "46-dark-strong.png") });
+await page.evaluate(() => window.mbm.openTableOf("风险清单"));
+await page.waitForTimeout(700);
+await page.screenshot({ path: path.join(here, "shots", "47-dark-table-lb.png") });
+console.log(await page.evaluate(() => {
+  const lb = document.querySelector(".mbm-lb");
+  const td = lb.querySelector("td");
+  const tbl = lb.querySelector("table");
+  return { tdColor: getComputedStyle(td).color, tblBg: getComputedStyle(tbl).backgroundColor, lbBg: getComputedStyle(lb).backgroundColor };
+}));
+await browser.close();
