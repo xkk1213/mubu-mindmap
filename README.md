@@ -1,4 +1,28 @@
-# Mubu Mindmap（幕布式思维导图）
+# Mubu Mindmap
+
+Turn a Markdown note into a **Mubu-style mind map** inside Obsidian: headings and lists become a tree automatically, and paragraphs, tables, images and code blocks are all rendered inside the nodes — nothing is truncated.
+
+- **Full Markdown support** — bold, italics, inline code, links, math, ordered / unordered / task lists and multi-line bodies, rendered with Obsidian's own renderer.
+- **Editable structure, untouched source** — hold `Alt` and drop a card onto another node, or indent / promote with `Tab` / `Shift+Tab`. The Markdown file itself is never rewritten.
+- **Highlight layer** — `**bold**` text gets a highlighter / underline treatment layered by depth. Toggle the whole layer from the toolbar; text positions stay **pixel-identical** either way, so you can flip between the two states without losing your visual memory of the map.
+- **Per-word styling** — right-click any bold run to override the highlight style for that word only.
+- **Zoom everywhere** — cards, tables and images each open into a full-screen viewer with wheel zoom, drag-to-pan, and `←` `↑` `↓` `→` to jump between neighbouring cards.
+- **Comfort** — resizable and freely movable cards, four layouts, search and jump (`Ctrl/⌘ + F`), edge scrollbar, keyboard panning, undo / redo, light and dark themes.
+
+## Install
+
+1. In Obsidian, open **Settings → Community plugins → Browse** and search for **Mubu Mindmap**.
+2. Enable **Mubu Mindmap** in **Settings → Community plugins**.
+
+Manual install: copy `main.js`, `manifest.json` and `styles.css` into `<your vault>/.obsidian/plugins/mubu-mindmap/`.
+
+## Usage
+
+Click the branch icon in the left ribbon (or the button in the note header, or run the command `Open mind map of current note`) to open the map beside your note. The canvas is **locked by default** so you can pan, zoom and select without moving anything; unlock it from the toolbar to drag cards or change structure. Right-click a node for the full menu, and press `Ctrl/⌘ + F` to jump to any item by title or body text.
+
+---
+
+## 中文说明
 
 把 Obsidian 里的 Markdown 一键变成**幕布式思维导图**：标题、列表自动成树，正文、表格、图片、代码全部完整显示；支持卡片拖动与缩放、**不改原文的层级调整**、卡片 / 表格 / 图片点开放大、强调一键开关、撤销 / 一键还原。
 
