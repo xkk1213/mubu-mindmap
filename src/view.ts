@@ -6,6 +6,7 @@ import {
   Modal,
   Notice,
   TFile,
+  ViewStateResult,
   WorkspaceLeaf,
   setIcon,
 } from "obsidian";
@@ -398,8 +399,9 @@ export class MindmapView extends ItemView {
     return { file: this.file?.path ?? this.pendingPath ?? null };
   }
 
-  async setState(state: any, result: any): Promise<void> {
-    const path: string | null = state?.file ?? null;
+  async setState(state: unknown, result: ViewStateResult): Promise<void> {
+    const s = (state ?? {}) as { file?: string | null };
+    const path: string | null = s.file ?? null;
     this.pendingPath = path;
     if (path) {
       const f = this.app.vault.getAbstractFileByPath(path);

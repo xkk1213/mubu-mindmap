@@ -276,7 +276,7 @@ export class MediaViewer {
     };
     window.addEventListener("keydown", this.keyHandler, true);
 
-    requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       this.root.classList.add("is-open");
       this.render(true);
     });

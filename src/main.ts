@@ -128,7 +128,7 @@ export default class MubuMindmapPlugin extends Plugin {
     const open = this.app.workspace.getLeavesOfType(VIEW_TYPE);
     for (const view of this.views) {
       if (view.file?.path === file.path && open.includes(view.leaf)) {
-        this.app.workspace.revealLeaf(view.leaf);
+        void this.app.workspace.revealLeaf(view.leaf);
         return;
       }
     }
@@ -141,7 +141,7 @@ export default class MubuMindmapPlugin extends Plugin {
       active: true,
       state: { file: file.path },
     });
-    this.app.workspace.revealLeaf(leaf);
+    void this.app.workspace.revealLeaf(leaf);
   }
 
   private refreshHeaderButtons() {
@@ -194,8 +194,13 @@ export default class MubuMindmapPlugin extends Plugin {
   /* ------------------------------------------------------------------ */
 
   async loadSettings() {
-    const data = await this.loadData();
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, { viewAdjust: {}, strongOverrides: {} }, data ?? {});
+    const data = (await this.loadData()) as Partial<MubuSettings> | null;
+    this.settings = Object.assign(
+      {},
+      DEFAULT_SETTINGS,
+      { viewAdjust: {}, strongOverrides: {} },
+      data ?? {}
+    ) as MubuSettings;
     // 老版本默认「滚轮 = 缩放」，触控板上下滑动会误缩放；这里迁移一次成「滚动」
     if (!this.settings.wheelMigrated) {
       this.settings.wheel = "pan";

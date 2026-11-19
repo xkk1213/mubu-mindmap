@@ -1,6 +1,6 @@
 {
   "name": "mubu-mindmap",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "将 Markdown 一键转换为幕布式思维导图的 Obsidian 插件",
   "main": "main.js",
   "scripts": {

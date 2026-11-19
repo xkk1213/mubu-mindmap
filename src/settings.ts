@@ -14,7 +14,7 @@ export class MubuSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
     containerEl.addClass("mbm-settings");
-    new Setting(containerEl).setName("Mubu Mindmap 设置").setHeading();
+    new Setting(containerEl).setName("常规").setHeading();
 
     new Setting(containerEl)
       .setName("默认布局")

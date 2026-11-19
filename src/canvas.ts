@@ -231,9 +231,7 @@ export class MindmapCanvas {
     this.wrapper.classList.toggle("mbm-table-full", s.tableMode === "full");
 
     // 主题变量挂在容器上，工具栏与画布共用
-    const host =
-      (this.wrapper.closest(".mbm-container") as HTMLElement | null) ??
-      this.wrapper;
+    const host = this.themeHostEl;
 
     // 强调相关类同时挂到容器上：放大浮层从容器复制类名，否则浮层里强调会丢。
     // 关闭「内容突出」时直接不挂强调类 —— 少一层 !important 覆盖，也保证字重/宽度不变。
@@ -292,7 +290,7 @@ export class MindmapCanvas {
   setMode(mode: LayoutMode, animate = true) {
     if (this.mode === mode) return;
     this.mode = mode;
-    this.relayout(animate);
+    void this.relayout(animate);
   }
 
   getMode() {
@@ -309,7 +307,7 @@ export class MindmapCanvas {
     this.pos.clear();
     this.fitted = false;
     await this.render();
-    this.relayout(false);
+    void this.relayout(false);
     if (opts.fit !== false) this.fit(false);
     this.reportStats();
   }
@@ -373,7 +371,7 @@ export class MindmapCanvas {
     if (!node) return;
     node.collapsed = collapsed;
     await this.render(); // 复用缓存，只挂载/卸载 DOM
-    this.relayout(animate);
+    void this.relayout(animate);
   }
 
   async setAllCollapsed(collapsed: boolean, keepDepth = 1) {
@@ -386,7 +384,7 @@ export class MindmapCanvas {
     };
     walk(this.root);
     await this.render();
-    this.relayout(true);
+    void this.relayout(true);
   }
 
   /** 当前是否有处于折叠状态的节点 */
@@ -415,7 +413,7 @@ export class MindmapCanvas {
     }
     if (changed) {
       await this.render();
-      this.relayout(true);
+      void this.relayout(true);
     }
     this.setActive(hit.node.id, {
       scroll: opts.scroll !== false,
@@ -697,6 +695,12 @@ export class MindmapCanvas {
   }
 
   /** 表格外壳：右上角「放大」按钮 */
+  /** 主题容器：工具栏与画布共用同一个 .mbm-container，放大浮层从这里复制主题类与 CSS 变量 */
+  private get themeHostEl(): HTMLElement {
+    const el = this.wrapper.closest(".mbm-container");
+    return el instanceof HTMLElement ? el : this.wrapper;
+  }
+
   private decorateTable(outer: HTMLElement, holder: HTMLElement) {
     const btn = outer.createEl("button", { cls: "mbm-zoom-btn" });
     btn.setAttribute("type", "button");
@@ -705,9 +709,7 @@ export class MindmapCanvas {
     btn.addEventListener("click", (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
-      const host =
-        (this.wrapper.closest(".mbm-container") as HTMLElement | null) ??
-        this.wrapper;
+      const host = this.themeHostEl;
       openTable(holder, host);
     });
     // 阻止按钮上的指针事件触发卡片拖动
@@ -735,9 +737,7 @@ export class MindmapCanvas {
         more.setText(`共 ${rows} 行 × ${cols} 列 · 点击放大看全貌`);
         more.addEventListener("click", (ev) => {
           ev.stopPropagation();
-          const host =
-            (this.wrapper.closest(".mbm-container") as HTMLElement | null) ??
-            this.wrapper;
+          const host = this.themeHostEl;
           openTable(holder, host);
         });
         more.addEventListener("pointerdown", (ev) => ev.stopPropagation());
@@ -755,9 +755,7 @@ export class MindmapCanvas {
       img.addEventListener("click", (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        const host =
-          (this.wrapper.closest(".mbm-container") as HTMLElement | null) ??
-          this.wrapper;
+        const host = this.themeHostEl;
         openImage(img, host);
       });
       img.addEventListener("pointerdown", (ev) => {
@@ -775,7 +773,7 @@ export class MindmapCanvas {
   private scheduleRemeasure() {
     if (this.destroyed) return;
     window.setTimeout(() => {
-      if (!this.destroyed) this.relayout(false);
+      if (!this.destroyed) void this.relayout(false);
     }, 60);
   }
 
@@ -786,9 +784,7 @@ export class MindmapCanvas {
   /** 打开整张卡片的放大视图；方向键 / ‹ › 可在卡片之间切换 */
   openCardViewer(start: MindNode) {
     if (!this.els.has(start.id)) return;
-    const host =
-      (this.wrapper.closest(".mbm-container") as HTMLElement | null) ??
-      this.wrapper;
+    const host = this.themeHostEl;
     let cur = start.id;
     this.setActive(cur, { flash: false });
 
@@ -1574,7 +1570,7 @@ export class MindmapCanvas {
         new Notice("画布已锁定，先点右上角的锁图标解锁再编辑");
         return;
       }
-      this.startEdit(nodeEl, node);
+      void this.startEdit(nodeEl, node);
     });
 
     comp.registerDomEvent(this.layer, "contextmenu", (ev: MouseEvent) => {
